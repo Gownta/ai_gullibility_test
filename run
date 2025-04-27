@@ -3,5 +3,9 @@
 set -e
 set -x
 
+# source site/.venv/bin/activate
+
 cd site
 flask --app flaskr run --debug --host 0.0.0.0
+
+# <hostname>:5000/
