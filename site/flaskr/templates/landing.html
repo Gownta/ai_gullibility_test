@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="vcent">
+    <div>
+      <h1>AI Fact Test</h1>
+      <p class="cent">Test your ability to distinguish fact from fiction in AI-generated responses.</p>
+      <form action="{{ url_for('start_test') }}" method="post" class="cent">
+        <button type="submit" class="start-button">Start Test</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

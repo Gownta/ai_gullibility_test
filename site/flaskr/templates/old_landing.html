@@ -1,0 +1,16 @@
+<html>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+<head><title>AI Fact Test</title></head>
+<body>
+  <div class="vcent">
+    <div>
+      <h1>AI Fact Test</h1>
+      <p class="cent">Test your ability to distinguish fact from fiction in AI-generated responses.</p>
+       <form action="{{ url_for('start_test') }}" method="post" class="cent">
+         <button type="submit" class="start-button">Start Test</button>
+        </form>
+    </div>
+  </div>
+</body>
+</html>
