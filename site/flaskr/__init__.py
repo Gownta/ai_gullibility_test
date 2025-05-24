@@ -1,5 +1,7 @@
 import os
-from flask import Flask
+import uuid
+from flask import Flask, session, render_template, url_for
+    #Blueprint, flash, g, redirect, render_template, request, url_for
 from flask_admin import Admin
 from .models import db, add_views
 
@@ -29,9 +31,17 @@ def create_app(test_config=None):
     admin.init_app(app)
     add_views(admin)
 
-    # a simple page that says hello
-    @app.route('/hello')
-    def hello():
-        return 'Hello, World!'
+    @app.before_request
+    def start_session():
+        if 'user_id' not in session:
+            session['user_id'] = str(uuid.uuid4())
+
+    @app.route('/')
+    def index():
+        return render_template('landing.html')
+
+    @app.route('/test', methods=("POST",))
+    def start_test():
+        return ""
 
     return app

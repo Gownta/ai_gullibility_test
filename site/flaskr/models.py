@@ -29,7 +29,7 @@ class Question(db.Model):
     prompt: Mapped[str] = mapped_column(db.Text, nullable=False)
     response: Mapped[str] = mapped_column(db.Text, nullable=False)
     question: Mapped[str] = mapped_column(db.Text, nullable=False)
-    answer: Mapped[bool] = mapped_column(db.Boolean, nullable=False)
+    answer: Mapped[str] = mapped_column(db.String(1), nullable=False)  # [T]rue, [F]alse, [U]nknown
     reference: Mapped[Optional[str]] = mapped_column(db.Text)
 
 

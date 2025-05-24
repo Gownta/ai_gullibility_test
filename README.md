@@ -6,3 +6,8 @@ From site, run `python3 -m venv .venv`
 Activate by `source .venv/bin/activate`
 
 Run tests like `p -m pytest`
+
+
+# References
+
+- [Palette picker](https://coolors.co/)
