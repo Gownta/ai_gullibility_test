@@ -1,15 +1,11 @@
 import datetime
 from typing import Optional
-from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import text
 from sqlalchemy.orm import Mapped, mapped_column
 
 
 db = SQLAlchemy()
-admin = Admin()
-
 
 
 class User(db.Model):
@@ -69,8 +65,9 @@ class Submission(db.Model):
     )
 
 
-admin.add_view(ModelView(User, db.session))
-admin.add_view(ModelView(Question, db.session))
-admin.add_view(ModelView(Test, db.session))
-admin.add_view(ModelView(TestQuestion, db.session))
-admin.add_view(ModelView(Submission, db.session))
+def add_views(admin):
+    admin.add_view(ModelView(User, db.session))
+    admin.add_view(ModelView(Question, db.session))
+    admin.add_view(ModelView(Test, db.session))
+    admin.add_view(ModelView(TestQuestion, db.session))
+    admin.add_view(ModelView(Submission, db.session))

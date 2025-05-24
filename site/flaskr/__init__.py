@@ -1,125 +1,37 @@
+import os
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
-from sqlalchemy.orm import Mapped, mapped_column
-
-'''
-db = SQLAlchemy()
-admin = Admin()
-
-class User(db.Model):
-    __tablename__ = 'user'
-    id: Mapped[int] = mapped_column(primary_key=True)
-    username: Mapped[str] = mapped_column(unique=True)
-    salt = db.Column(db.String, nullable=False)
-    password = db.Column(db.String, nullable=False)
-
-    def __str__(self):
-        return self.name
-
-admin.add_view(ModelView(User, db.session))
-'''
+from .models import db, add_views
 
 
-def create_app():
-    from .models import db, admin
-    app = Flask(__name__)
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db.sqlite3"
-    app.config["SECRET_KEY"] = "mysecret"
+def create_app(test_config=None):
+    # Create the app
+    app = Flask(__name__, instance_relative_config=True)
 
+    # ensure the instance folder exists
+    os.makedirs(app.instance_path, exist_ok=True)
+
+    # Load the config - prod or test
+    if test_config is None:
+        app.config.from_mapping(
+            SECRET_KEY='mysecret',
+            DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
+            SQLALCHEMY_DATABASE_URI="sqlite:///db.sqlite3",
+        )
+    else:
+        app.config.from_mapping(test_config)
+
+    # Create the database and admin views
+    admin = Admin(name='AI Gullibility Admin')
     db.init_app(app)
     with app.app_context():
         db.create_all()
     admin.init_app(app)
-
-    return app
-
-
-
-"""
-import os
-
-from flask import Flask
-from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
-from flask_sqlalchemy import SQLAlchemy
-
-
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase
-class Base(DeclarativeBase):
-      pass
-db = SQLAlchemy(model_class=Base)
-
-def create_app(test_config=None):
-    # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
-    )
-
-    '''
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        # load the test config if passed in
-        app.config.from_mapping(test_config)
-    '''
-
-    # ensure the instance folder exists
-    os.makedirs(app.instance_path, exist_ok=True)
+    add_views(admin)
 
     # a simple page that says hello
     @app.route('/hello')
     def hello():
         return 'Hello, World!'
 
-    #from . import db
-    #db.init_app(app)
-
-    #from . import auth
-    #app.register_blueprint(auth.bp)
-
-    #from . import blog
-    #app.register_blueprint(blog.bp)
-    #app.add_url_rule('/', endpoint='index')
-
-    #from .models import db, User, Question, Test, TestQuestion, Submission
-
-    #from sqlalchemy import (
-    #    Column, Integer, String, Text, Boolean, ForeignKey, TIMESTAMP,
-    #    UniqueConstraint, Index, create_engine
-    #)
-    #from sqlalchemy.orm import DeclarativeBase
-
-
-
-    from sqlalchemy import (
-        Column, Integer, String, Text, Boolean, ForeignKey, TIMESTAMP,
-        UniqueConstraint, Index, create_engine
-    )
-    from sqlalchemy import Integer, String
-    from sqlalchemy.orm import Mapped, mapped_column
-
-
-
-    app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
-    #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://' + app.config['DATABASE'] # 'sqlite:///test.db'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tdb4'
-    print(app.config['SQLALCHEMY_DATABASE_URI'])
-    db.init_app(app)
-    class XUser(db.Model):
-        __tablename__ = 'yuser'
-        id: Mapped[int] = mapped_column(primary_key=True)
-        username: Mapped[str] = mapped_column(unique=True)
-        email: Mapped[str]
-    with app.app_context():
-        db.create_all()
-
-    admin = Admin(app, name='AI Gullibility Admin', template_mode='bootstrap3')
-    admin.add_view(ModelView(XUser, db.session))
     return app
-"""
